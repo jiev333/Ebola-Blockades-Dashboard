@@ -92,17 +92,17 @@ function generateBarChart(id) {
          //the largest stack
         max_stack = d3.max(layers, function(layer) { return d3.max(layer, function(d) { return d.y0 + d.y; }); });
 
-    var margin = {top: 0, right: 10, bottom: 20, left: 50},
-        width = 683 - margin.left - margin.right,
-        height = 263 - margin.top - margin.bottom;
+    var margin = {top: 0, right: 10, bottom: 20, left: 50},	
+        width = $('#bar_chart').width() - margin.left - margin.right, 
+        height = 100 - margin.top - margin.bottom;  
 
     var x = d3.scale.linear()
             .domain([0, max_stack])
-            .range([0, (width-120)]);
+            .range([0, width*0.47]);
 
     var y = d3.scale.ordinal()
             .domain(restriction_type)
-            .rangeRoundBands([2, height-160], .08);
+            .rangeRoundBands([2, height], .08); 
 
     var xAxis = d3.svg.axis()
             .scale(x)
@@ -144,7 +144,7 @@ function generateBarChart(id) {
     
     bar.append("g") 
         .attr("class", "x_axis")
-        .attr("transform", "translate(0," + [height-160] + ")") // corresponding to y
+        .attr("transform", "translate(0," + [height] + ")") // corresponding to y
         .call(xAxis);
 
     bar.append('g') // vo change svg -> bar
@@ -189,17 +189,17 @@ function transitionBarChart(id, country, region, selected) {
      var max_stack = d3.max(layers, function(layer) { return d3.max(layer, function(d) { return d.y0 + d.y; }); });
         
      var margin = {top: 0, right: 10, bottom: 20, left: 50},
-        width = 683 - margin.left - margin.right,
-        height = 263 - margin.top - margin.bottom;
+        width = $('#bar_chart').width() - margin.left - margin.right,
+        height = 100 - margin.top - margin.bottom;
      var selected_type = "";
     
     var x = d3.scale.linear()
             .domain([0, max_stack])
-            .range([0, (width-120)]);
+            .range([0, width*0.47]);
     
     var y = d3.scale.ordinal()
            .domain(restriction_type)
-            .rangeRoundBands([2, height-160], .08);
+            .rangeRoundBands([2, height], .08);
     
     var xAxis = d3.svg.axis()
             .scale(x)
@@ -239,7 +239,7 @@ function transitionBarChart(id, country, region, selected) {
     }
 
     d3.select("g.x_axis")
-        .attr("transform", "translate(0," + [height-160] + ")") // corresponding to y
+        .attr("transform", "translate(0," + [height] + ")") // corresponding to y
         .call(xAxis);
         
     // color description
@@ -257,23 +257,23 @@ function transitionBarChart(id, country, region, selected) {
 
 function barChartLegend(svg, restriction_nature, dataset, selected_index) {
     for (i=0; i<dataset.length; i++) {
-        var xPos = 0; 
-        var yPos = i * 24;;
+        var xPos = $('#bar_chart').width()*0.60; 
+        var yPos = i * 24;
         dataset_restriction_nature = sortRestructionNature(dataset[i], restriction_nature);
         dataset_restriction_nature.forEach(function (s, j) {
             legend_color = svg.append('rect')
                 .attr("class", "legend_color")
                 .attr('fill', colors(getColor(restriction_nature, dataset_restriction_nature, j)))
-                .attr('width', 10)
-                .attr('height', 10)
+                .attr('width', 8)
+                .attr('height', 8)
                 .attr('x', xPos)
-                .attr('y', yPos + 130);
+                .attr('y', yPos + 20);
             legend_text = svg.append('text')
                 .attr("class", "legend_text")
                 .attr("id",function(s){return dataset_restriction_nature[j].replace(/\s/g, '');})
                 .attr('fill', 'black')
-                .attr('x', xPos + 20)
-                .attr('y', yPos + 140)
+                .attr('x', xPos + 11)
+                .attr('y', yPos + 28)
                 .text(s);
 
             if (selected_index === i || selected_index === "") {
@@ -285,7 +285,7 @@ function barChartLegend(svg, restriction_nature, dataset, selected_index) {
                 legend_text.style("opacity", 0.3);
             }
             id = "#"+dataset_restriction_nature[j].replace(/\s/g, '');
-            xPos += $(id).width() + 40;
+            xPos += $(id).width() + 20;
             console.log("next Pos: "+xPos+" "+yPos);
         }); 
     }
@@ -293,14 +293,15 @@ function barChartLegend(svg, restriction_nature, dataset, selected_index) {
 
 function generateMap(){
     var margin = {top: 10, right: 10, bottom: 10, left: 10},
-    width = $('#map').width() - margin.left - margin.right,
-    height = 550;
+    width = ($('#map').width())*0.9 - margin.left - margin.right,
+    height = 400;
    
     var projection = d3.geo.mercator()
-        .center([-8,9])
-        .scale(3600);
+        .center([-7.5,7.5])
+        .scale(2700);
 
     var svg = d3.select('#map').append("svg")
+        .attr("id", "thismap")
         .attr("width", width)
         .attr("height", height);
 
@@ -319,17 +320,27 @@ function generateMap(){
         .attr("class","country")
         .on("mouseover",function(d){
             if(d.properties.ISO3 === "GIN" || d.properties.ISO3 === "SLE" || d.properties.ISO3 === "LBR"){
-                if(focusCountry!=d.properties.ISO3){d3.select(this).attr("fill","steelblue");}
+                if(focusCountry!==d.properties.ISO3){
+                    d3.select(this)
+                        .attr("stroke","steelblue")
+                        .attr("stroke-width",5);
+                }
             }
         })
         .on("mouseout",function(d){
             if(d.properties.ISO3 === "GIN" || d.properties.ISO3 === "SLE" || d.properties.ISO3 === "LBR"){
-                if(focusCountry!=d.properties.ISO3){d3.select(this).attr("fill","#ffffff");}
+                if(focusCountry!==d.properties.ISO3){
+                    d3.select(this)
+                        .attr("stroke","#aaaaaa")
+                        .attr("stroke-width",1);
+                }
             }
         })
         .on("click",function(d){
             if(d.properties.ISO3 === "GIN" || d.properties.ISO3 === "SLE" || d.properties.ISO3 === "LBR"){
-                d3.select(this).attr("fill","#ffffff");
+                d3.select(this)
+                    .attr("stroke","#aaaaaa")
+                    .attr("stroke-width",1);
                 setCountryRestrictions(d.properties.NAME,moveRes);
                 focusOn(d.properties.ISO3);
                 transitionBarChart("#bar_chart", d.properties.NAME, "", "");
@@ -343,16 +354,20 @@ function generateMap(){
         .enter()
         .append("text")
         .attr("x", function(d,i){
-                    return path.centroid(d)[0]-20;})
+                    return path.centroid(d)[0]-40;})
         .attr("y", function(d,i){
                     return path.centroid(d)[1];})
-        .attr("dy", ".55em")
+        .attr("dy", ".2em")
         .attr("class","maplabel")
-        .style("font-size","12px")
-        .attr("opacity",0.4)
+        .style("font-size","14px")
+        .attr("opacity",0.6)
         .text(function(d,i){
+            if(d.properties.ISO3 === "GIN" ||
+               d.properties.ISO3 === "SLE" ||
+               d.properties.ISO3 === "LBR"){
                     return d.properties.NAME;
-                });
+            }
+        });
                 
 
     var g = svg.append("g");    
@@ -365,29 +380,34 @@ function generateMap(){
         .attr("stroke",'none')
         .attr("stroke-width","0px")
         .attr("fill",'none')
-        .attr("id",function(d){return d.properties.PCODE_REF;})
+        .attr("id",function(d){return d.properties.PCODEUSE;})
         .attr("class","region")
         .on("mouseover",function(d){
             if(d.properties.CNTRY_CODE===focusCountry){
-                d3.select(this).attr("fill","steelblue");
+                d3.select(this)
+                    .attr("stroke","steelblue")
+                    .attr("stroke-width",5);
             }
         })
         .on("mouseout",function(d){
             if(d.properties.CNTRY_CODE===focusCountry){
-                if(focusAdm==="" || d.properties.PCODE_REF ===focusAdm){
-                    d3.select(this).attr("fill","#ff9999");
+               if(focusAdm==="" || d.properties.PCODEUSE ===focusAdm){
+                    d3.select(this).attr("fill","#FFCA28");
                 } else {
                     d3.select(this).attr("fill","#ffffff");
                 }
+                d3.select(this) 
+                    .attr("stroke","#aaaaaa")
+                    .attr("stroke-width",1);   
             }
         })
         .on("click",function(d){
-            setadmRestrictions(d.properties.CNTRY_NAME,d.properties.PCODE_REF,d.properties.NAME_REF,moveRes);
-            focusOnAdm(d.properties.CNTRY_CODE,d.properties.PCODE_REF);
-            transitionBarChart("#bar_chart", d.properties.CNTRY_NAME, d.properties.PCODE_REF, "");
+            setadmRestrictions(d.properties.CNTRY_NAME,d.properties.PCODEUSE,d.properties.NAMEUSE,moveRes);
+            focusOnAdm(d.properties.CNTRY_CODE,d.properties.PCODEUSE);
+            transitionBarChart("#bar_chart", d.properties.CNTRY_NAME, d.properties.PCODEUSE, "");
         })
         .append("svg:title")
-        .text(function(d) { return d.properties.NAME_REF; });                
+        .text(function(d) { return d.properties.NAMEUSE; });                 
                 
 }
 
@@ -431,6 +451,13 @@ function setTypeRestrictions(type, data){
             htmlcur = htmlcur + convertTypeResToHTML(e);
         }        
     });
+    $("#current_geo").html(htmlcur);
+    $("#sub_geo").html(""); // remove old contents
+    $("#sup_geo").html(""); // remove old contents
+}
+
+function resetRestrictionsText(){
+    var htmlcur = "<h3>Movement Restrictions</h3><p>Click a country to browse movement restrictions</p>";
     $("#current_geo").html(htmlcur);
     $("#sub_geo").html(""); // remove old contents
     $("#sup_geo").html(""); // remove old contents
@@ -515,7 +542,7 @@ function focusOn(country){
         })
         .attr("fill",function(d){
             if(d.properties.CNTRY_CODE===country){
-                return "#ff9999";
+                return "#FFCA28";
             } else {
                 return "none";
             }    
@@ -528,8 +555,8 @@ function focusOnAdm(country,adm){
     d3.selectAll(".region")
         .attr("fill",function(d){
             if(d.properties.CNTRY_CODE===country){
-                if(d.properties.PCODE_REF===adm){
-                    return "#ff9999";
+                 if(d.properties.PCODEUSE===adm){
+                    return "#FFCA28"; 
                 } else {
                     return "#ffffff";
                 }
@@ -537,6 +564,15 @@ function focusOnAdm(country,adm){
                 return "none";
             }    
         });
+}
+
+function resetPage() {
+    focusCountry="";
+    focusAdm ="";
+    transitionBarChart("#bar_chart", "All", "", "");
+    resetRestrictionsText();
+    d3.select("#thismap").remove();
+    generateMap();
 }
 
 function stickydiv(){
@@ -548,7 +584,7 @@ function stickydiv(){
     else{
         $('#graphic').removeClass('sticky');
     }
-};
+}
 
 var focusCountry="";
 var focusAdm ="";
