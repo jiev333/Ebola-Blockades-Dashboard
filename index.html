@@ -26,19 +26,22 @@
         <div class="container dashboard">
             <div class="row">
                 <h1>West Africa Ebola Movement Restrictions Dashboard</h1>
-                <p>Updated for 20th October. Created by Simon Johnson. Twitter: <a href="https://twitter.com/Simon_B_Johnson" target="_blank">@simon_b_Johnson</a> Source:<a href="https://docs.google.com/spreadsheets/d/1l79MMZba10_Kym6PkrLosyWz3uWFaAixfJVuH5q3o3Q/edit?usp=sharing">Google Spreadsheet</a></p>
+                <p>Update for 16th February. Created by Simon Johnson. Twitter: <a href="https://twitter.com/Simon_B_Johnson" target="_blank">@simon_b_Johnson</a> Source:<a href="https://docs.google.com/spreadsheets/d/1l79MMZba10_Kym6PkrLosyWz3uWFaAixfJVuH5q3o3Q/edit?usp=sharing" target="_blank">Google Spreadsheet</a></p>
             </div>
             <div class="row">
-                <div class="col-md-7">
-                    <div id="sticky-anchor"></div>
-                    <div id="graphic">                       
-                        <h4>Type of Restriction (X-Axis shows the number of different restrictions)</h4>
-                        <div id="bar_chart" class="col-md-12"></div>
+                <div class="col-md-8">
+                    <div id="sticky-anchor" ></div>                                            
+                    <div id="graphic">
+			            <div class="col-md-12">
+                            <h4>Type of Restriction (X-Axis shows the number of different restrictions)</h4>						
+                            <button onclick="resetPage()">Reset the page</button>
+                        </div>
+						<div id="bar_chart" class="col-md-12"></div>
                         <h4>Map</h4>
                         <div id="map" class="col-md-12"></div>                        
                     </div>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-4">
                     <div id="current_geo" class="row res_box">
                         <h3>Movement Restrictions</h3>
                         <p>Click a country to browse movement restrictions</P>
