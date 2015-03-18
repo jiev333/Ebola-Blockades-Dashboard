@@ -22,3 +22,14 @@
     stroke: black;
     shape-rendering: crispEdges;
 }
+
+.legend_text {
+    font: 11px sans-serif;
+}
+
+button {
+    background-color:steelblue;
+    color:white;
+    padding: 5;
+    border: none;
+}
