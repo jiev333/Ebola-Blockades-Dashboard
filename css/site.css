@@ -28,6 +28,9 @@
 }
 
 button {
+    position: absolute;
+    top: 0px; 
+    right: 15px;
     background-color:steelblue;
     color:white;
     padding: 5;
